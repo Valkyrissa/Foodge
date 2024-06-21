@@ -13,10 +13,7 @@ using Dalamud.Game.ClientState.Statuses;
 using System.Dynamic;
 using Dalamud.Game.ClientState.Objects.Types;
 using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
-using XivCommon.Functions;
-using System.Runtime.InteropServices;
-using Dalamud.Game.ClientState.Objects.SubKinds;
-using System.Threading;
+
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 
@@ -25,7 +22,6 @@ namespace SamplePlugin;
 public unsafe class Plugin : IDalamudPlugin
 {
     private const string CommandName = "/pmycommand";
-
     [PluginService] internal static IFramework framework { get; set; } = null!;
     private DalamudPluginInterface PluginInterface { get; init; }
     private ICommandManager CommandManager { get; init; }
@@ -37,7 +33,7 @@ public unsafe class Plugin : IDalamudPlugin
     //maybe put all this in a struct?
     private bool updateFlag = false;
     //default value is 20
-    private int durationSpecified = 20;
+    private int durationSpecified = 50;
     private uint reminderOption = 6;
 
     private  PluginCommandManager<Plugin> comm;
@@ -179,12 +175,12 @@ public unsafe class Plugin : IDalamudPlugin
             var durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
 
             //Add option to customize duration.
-            if(Math.Floor(durationSeconds/60) < durationSpecified && Math.Floor(durationSeconds/60) != 0 && updateFlag == false) {
+            if((Math.Floor(durationSeconds/60) < durationSpecified) && (Math.Floor(durationSeconds/60) != 0) && updateFlag.Equals(false)) {
                 chat.Print($"Food duration is at {Math.Floor(durationSeconds/60)} minutes. Consider extending the buff.");
                 playReminder();
                 updateFlag = true;
             }
-            else if(Math.Floor(durationSeconds/60) < 20.0 && Math.Floor(durationSeconds/60) == 0 && updateFlag == false){
+            else if(Math.Floor(durationSeconds/60) < 20.0 && Math.Floor(durationSeconds/60) == 0 && updateFlag.Equals(false)){
                 chat.Print($"Food duration is less than 1 minute. Consider extending the buff.");
                 playReminder();
                 updateFlag = true;

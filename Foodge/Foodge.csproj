@@ -10,7 +10,4 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="XivCommon" Version="9.0.0" />
-  </ItemGroup>
 </Project>
