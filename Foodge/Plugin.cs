@@ -167,9 +167,9 @@ public unsafe class Plugin : IDalamudPlugin
             //chat.Print($"{timeElapsed}");    
             var cs = (Character*) this.clientState.LocalPlayer.Address;
             new CharaLib(cs);
-            
+            var foodCheck = cs->GetStatusManager()->HasStatus(48);
             //48 is the ID of the Well Fed status.
-            if (cs->GetStatusManager()->HasStatus(48))
+            if (foodCheck.Equals(true))
         {
             var statusIndex = cs->GetStatusManager()->GetStatusIndex(StatusFood);
             var durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
