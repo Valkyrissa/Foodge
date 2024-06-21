@@ -14,4 +14,9 @@
 	  <PackageReference Include="DalamudPackager" Version="2.1.12" />
 	</ItemGroup>
 
+<ItemGroup>
+		<None Update="Foodge.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>
