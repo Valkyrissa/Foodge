@@ -9,8 +9,8 @@
   "IsTestingExclusive": false,
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Valkyrissa/Foodge",
-  "DownloadLinkInstall": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip",
-  "DownloadLinkTesting": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip"
+  "DownloadLinkInstall": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip"
 }
 
