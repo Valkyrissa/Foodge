@@ -1,5 +1,5 @@
 [
-    {
+  {
   "Author": "Valkyrissa",
   "Name": "Foodge",
   "Punchline": "Foodge.",
@@ -12,6 +12,7 @@
   "RepoUrl": "https://github.com/Valkyrissa/Foodge",
   "DownloadLinkInstall": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
   "DownloadLinkTesting": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
-  "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip"
-}
+  "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
+  "IconUrl": "https://raw.githubusercontent.com/Valkyrissa/Foodge/main/Data/pepefoodge.png"
+  }
 ]
