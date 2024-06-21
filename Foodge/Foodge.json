@@ -1,4 +1,5 @@
-{
+[
+    {
   "Author": "Valkyrissa",
   "Name": "Foodge",
   "Punchline": "Foodge.",
@@ -13,4 +14,4 @@
   "DownloadLinkTesting": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip",
   "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/releases/download/1.0.0/latest.zip"
 }
-
+]
