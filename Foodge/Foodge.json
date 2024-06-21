@@ -4,6 +4,9 @@
   "Punchline": "Foodge.",
   "Description": "Description of foodge.",
   "ApplicableVersion": "any",
+  "DownloadLinkInstall": "https://github.com/xivdev/Penumbra/releases/download/1.1.1.2/Penumbra.zip",
+  "DownloadLinkTesting": "https://github.com/xivdev/Penumbra/releases/download/testing_1.1.1.5/Penumbra.zip",
+  "DownloadLinkUpdate": "https://github.com/xivdev/Penumbra/releases/download/1.1.1.2/Penumbra.zip",
   "Tags": [
     "food",
     "reminder",
