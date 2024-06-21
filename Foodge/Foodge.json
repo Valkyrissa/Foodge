@@ -3,9 +3,14 @@
   "Name": "Foodge",
   "Punchline": "Foodge.",
   "Description": "Description of foodge.",
+  "InternalName": "Foodge",
+  "AssemblyVersion": "1.0.0.1",
+  "TestingAssemblyVersion": "1.0.0.1",
+  "IsTestingExclusive": false,
   "ApplicableVersion": "any",
   "RepoUrl": "https://github.com/Valkyrissa/Foodge",
-  "DownloadLinkInstall": "https://https://github.com/Valkyrissa/Foodge/tree/main/Foodge/releases/latest.zip",
-  "DownloadLinkTesting": "https://https://github.com/Valkyrissa/Foodge/tree/main/Foodge/releases/latest.zip",
-  "DownloadLinkUpdate": "https://https://github.com/Valkyrissa/Foodge/tree/main/Foodge/releases/latest.zip"
+  "DownloadLinkInstall": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip",
+  "DownloadLinkTesting": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip",
+  "DownloadLinkUpdate": "https://github.com/Valkyrissa/Foodge/blob/main/Foodge/releases/latest.zip"
 }
+
