@@ -19,7 +19,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace SamplePlugin;
 
-public unsafe class Plugin : IDalamudPlugin
+public unsafe sealed class Plugin : IDalamudPlugin
 {
     private const string CommandName = "/pmycommand";
     [PluginService] internal static IFramework framework { get; set; } = null!;
@@ -27,21 +27,17 @@ public unsafe class Plugin : IDalamudPlugin
     private ICommandManager CommandManager { get; init; }
     public Configuration Configuration { get; init; }
     private  IChatGui chat { get; init; }
-
+    private ConfigWindow ConfigWindow { get; init; }
+    public readonly WindowSystem WindowSystem = new("Foodge");
     private static int timeElapsed = DateTime.Now.ToLocalTime().Minute;
 
-    //maybe put all this in a struct?
     private bool updateFlag = false;
     //default value is 20
-    private int durationSpecified = 50;
+    private int durationOption = 20;
     private uint reminderOption = 6;
 
     private  PluginCommandManager<Plugin> comm;
-    //private Chat CMessage { get; init; }
-
     private IClientState clientState;
-
-    public readonly WindowSystem windowSystem = new("SamplePlugin");
     private Character* character; 
     private uint StatusFood { get; set; } = 48;
 
@@ -54,11 +50,19 @@ public unsafe class Plugin : IDalamudPlugin
     {
         PluginInterface = pluginInterface;
         CommandManager = commandManager;
+
         this.clientState = clientState;
         this.chat = chat;
         
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
+
+        this.reminderOption = (uint)Configuration.reminderOption;
+        this.durationOption = Configuration.durationOption;
+
+        this.ConfigWindow = new ConfigWindow(this);
+
+        WindowSystem.AddWindow(ConfigWindow);
 
         var world = this.clientState.LocalPlayer?.CurrentWorld.GameData;
 
@@ -67,6 +71,11 @@ public unsafe class Plugin : IDalamudPlugin
 
 
         this.comm = new PluginCommandManager<Plugin>(this, commandManager);
+         PluginInterface.UiBuilder.Draw += DrawUI;
+
+        // This adds a button to the plugin installer entry of this plugin which allows
+        // to toggle the display status of the configuration ui
+        PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
         framework.Update += this.OnFrameworkTick;
     }
 
@@ -100,7 +109,6 @@ public unsafe class Plugin : IDalamudPlugin
           if (cs->GetStatusManager()->HasStatus(48))
         {
             var statusIndex = cs->GetStatusManager()->GetStatusIndex(StatusFood);
-            //chat.Print($"Food at index: {statusIndex}");
             var durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
 
             chat.Print($"Food duration left in minutes: {Math.Floor(durationSeconds/60)}");
@@ -128,8 +136,8 @@ public unsafe class Plugin : IDalamudPlugin
         else if(val > 30) {
             val = 30;
         }
-        durationSpecified = val;
-        chat.Print($"Duration set to {durationSpecified} minutes.");
+        durationOption = val;
+        chat.Print($"Duration set to {durationOption} minutes.");
     }
 
     [Command("/foodse")]
@@ -152,7 +160,7 @@ public unsafe class Plugin : IDalamudPlugin
 
     public void Dispose()
     {
-        windowSystem.RemoveAllWindows();
+        WindowSystem.RemoveAllWindows();
         CommandManager.RemoveHandler(CommandName);
         framework.Update -= this.OnFrameworkTick;
     }
@@ -160,9 +168,7 @@ public unsafe class Plugin : IDalamudPlugin
 
     private void OnFrameworkTick(IFramework ifw)
     {
-            //TODO: Add flag if food reminder has been given. 
-            //RESET on refood.
-            //Optional: Only active if Well Fed.
+            //TODO: RESET on refood OR if new set duration < old duration
             if(timeElapsed != DateTime.Now.ToLocalTime().Minute) {
             //chat.Print($"{timeElapsed}");    
             var cs = (Character*) this.clientState.LocalPlayer.Address;
@@ -174,8 +180,7 @@ public unsafe class Plugin : IDalamudPlugin
             var statusIndex = cs->GetStatusManager()->GetStatusIndex(StatusFood);
             var durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
 
-            //Add option to customize duration.
-            if((Math.Floor(durationSeconds/60) < durationSpecified) && (Math.Floor(durationSeconds/60) != 0) && updateFlag.Equals(false)) {
+            if((Math.Floor(durationSeconds/60) < durationOption) && (Math.Floor(durationSeconds/60) != 0) && updateFlag.Equals(false)) {
                 chat.Print($"Food duration is at {Math.Floor(durationSeconds/60)} minutes. Consider extending the buff.");
                 playReminder();
                 updateFlag = true;
@@ -193,9 +198,8 @@ public unsafe class Plugin : IDalamudPlugin
         timeElapsed = DateTime.Now.ToLocalTime().Minute;
         }
     }
-    //TODO: custom sound effect based on se.6 etc, can be chosen by user
     private void playReminder() {
-        UIModule.PlayChatSoundEffect(reminderOption);
+        UIModule.PlayChatSoundEffect((uint)reminderOption);
     }
 
     private void OnCommand(string command, string args)
@@ -203,5 +207,6 @@ public unsafe class Plugin : IDalamudPlugin
         // in response to the slash command, just toggle the display status of our main ui
     }
     public bool HasFood(uint statusId) => character->GetStatusManager()->HasStatus(statusId);
-    public void DrawUI() => windowSystem.Draw();
+    public void DrawUI() => WindowSystem.Draw();
+    public void ToggleConfigUI() => ConfigWindow.Toggle();
 }
