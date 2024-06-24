@@ -33,12 +33,16 @@ public unsafe sealed class Plugin : IDalamudPlugin
 
     private bool updateFlag = false;
     //default value is 20
+    private bool foodCheck;
     private int durationOption = 20;
+    private int durationSave;
     private uint reminderOption = 6;
+    private int statusIndex;
+    private float durationSeconds;
 
     private  PluginCommandManager<Plugin> comm;
     private IClientState clientState;
-    private Character* character; 
+    private Character* cs; 
     private uint StatusFood { get; set; } = 48;
 
     public Plugin(
@@ -59,9 +63,12 @@ public unsafe sealed class Plugin : IDalamudPlugin
 
         this.reminderOption = (uint)Configuration.reminderOption;
         this.durationOption = Configuration.durationOption;
+        this.durationSave = durationOption;
 
         this.ConfigWindow = new ConfigWindow(this);
 
+        cs = (Character*) this.clientState.LocalPlayer.Address;
+        new CharaLib(cs); 
         WindowSystem.AddWindow(ConfigWindow);
 
         var world = this.clientState.LocalPlayer?.CurrentWorld.GameData;
@@ -77,25 +84,7 @@ public unsafe sealed class Plugin : IDalamudPlugin
         // to toggle the display status of the configuration ui
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
         framework.Update += this.OnFrameworkTick;
-    }
-
-    public unsafe void openFriendList(){
-            FFXIVClientStructs.FFXIV.Client.UI.UIModule.Instance()->ExecuteMainCommand(13);
-    }
-
-    [Command("/stfu")]
-    [HelpMessage("Sets game volume. Takes percent of volume as argument (default 50).")]
-    public void ExampleCommand1(string command, string args)
-    {   
-        EnvironmentManager em = new EnvironmentManager();
-        int val;
-        if(Int32.TryParse(args, out val).Equals(false)){           
-            val = 50;
-        }
-        this.chat.Print($"Changing base volumes to {val}");
-        foreach(var soundChannel in Enum.GetValues<EnvironmentManager.SoundChannel>()){
-        em.SetVolume(soundChannel, val, true);
-        }
+        
     }
 
     [Command("/foodge")]
@@ -169,16 +158,21 @@ public unsafe sealed class Plugin : IDalamudPlugin
     private void OnFrameworkTick(IFramework ifw)
     {
             //TODO: RESET on refood OR if new set duration < old duration
+            foodCheck = cs->GetStatusManager()->HasStatus(48);
+
+            if(!foodCheck && updateFlag.Equals(true)) {
+            updateFlag = false;
+            }
             if(timeElapsed != DateTime.Now.ToLocalTime().Minute) {
-            //chat.Print($"{timeElapsed}");    
-            var cs = (Character*) this.clientState.LocalPlayer.Address;
-            new CharaLib(cs);
-            var foodCheck = cs->GetStatusManager()->HasStatus(48);
-            //48 is the ID of the Well Fed status.
+            if(durationSave != Configuration.durationOption) {
+                updateFlag = false;
+                durationSave = Configuration.durationOption;
+            }
+            //48 is the ID of the Well Fed status
             if (foodCheck.Equals(true))
         {
-            var statusIndex = cs->GetStatusManager()->GetStatusIndex(StatusFood);
-            var durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
+            statusIndex = cs->GetStatusManager()->GetStatusIndex(StatusFood);
+            durationSeconds = cs->GetStatusManager()->GetRemainingTime(statusIndex);
 
             if((Math.Floor(durationSeconds/60) < durationOption) && (Math.Floor(durationSeconds/60) != 0) && updateFlag.Equals(false)) {
                 chat.Print($"Food duration is at {Math.Floor(durationSeconds/60)} minutes. Consider extending the buff.");
@@ -192,9 +186,6 @@ public unsafe sealed class Plugin : IDalamudPlugin
             }
             
         }
-            else if(updateFlag.Equals(true)) {
-                updateFlag = false;
-        }
         timeElapsed = DateTime.Now.ToLocalTime().Minute;
         }
     }
@@ -206,7 +197,7 @@ public unsafe sealed class Plugin : IDalamudPlugin
     {
         // in response to the slash command, just toggle the display status of our main ui
     }
-    public bool HasFood(uint statusId) => character->GetStatusManager()->HasStatus(statusId);
+    public bool HasFood(uint statusId) => cs->GetStatusManager()->HasStatus(statusId);
     public void DrawUI() => WindowSystem.Draw();
     public void ToggleConfigUI() => ConfigWindow.Toggle();
 }
