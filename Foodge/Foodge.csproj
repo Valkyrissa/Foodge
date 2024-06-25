@@ -9,11 +9,7 @@
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-	  <PackageReference Include="DalamudPackager" Version="2.1.12" />
-	</ItemGroup>
-
+  
 <ItemGroup>
 		<None Update="Foodge.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
